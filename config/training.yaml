@@ -10,9 +10,9 @@ checkpoint:
 images:
   shape: ${tuple:1,64,64}
 
-display_gui: true
+display_gui: false
 enable_tensorboard: true
-n_training_steps: 500
+n_training_steps: 1000000
 buffer_start_size: 50
 batch_size: 50
 seed: 1

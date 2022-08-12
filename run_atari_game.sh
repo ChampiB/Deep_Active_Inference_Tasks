@@ -5,10 +5,10 @@ g_values='"reward" "efe_3"'
 for game in $atari_games; do
   # Run CHMM agents
   for g_value in $g_values; do
-    sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent=$agent seed=$seed env.difficulty="hard" agent.g_value=$g_value env=openai env.name=$game
+    sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent=$agent seed=$seed agent.g_value=$g_value env=openai env.name=$game
     seed=$((seed+1))
   done
   # Run DQN agent
-  sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="DQN" seed=$seed env.difficulty="hard" env=openai env.name=$game
+  sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="DQN" seed=$seed env=openai env.name=$game
   seed=$((seed+1))
 done

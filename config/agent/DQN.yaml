@@ -11,8 +11,8 @@ image_shape: ${images.shape}
 n_actions: ${env.n_actions}
 tensorboard_dir: "${oc.env:DATA_DIRECTORY}/runs/${agent.name}_${env.name}_${seed}"
 n_steps_between_synchro: 10
-discount_factor: 0.9
-queue_capacity: 10000
+discount_factor: 0.95
+queue_capacity: 100000
 lr: 0.001
 
 # Epsilon greedy scheduling
