@@ -113,10 +113,6 @@ class CHMM:
         # Retrieve the initial observation from the environment.
         obs = env.reset()
 
-        # Render the environment (if needed).
-        # TODO update already existing env if config["display_gui"]:
-        # TODO update already existing env     env.render()
-
         # Train the agent.
         Logger.get().info("Start the training at {time}".format(time=datetime.now()))
         while self.steps_done < config["n_training_steps"]:
@@ -139,12 +135,10 @@ class CHMM:
             if self.steps_done % config["checkpoint"]["frequency"] == 0:
                 self.save(config)
 
-            # Render the environment and monitor total rewards (if needed).
+            # Monitor total rewards (if needed).
             if config["enable_tensorboard"]:
                 self.total_rewards += reward
                 self.writer.add_scalar("Rewards", self.total_rewards, self.steps_done)
-            # TODO if config["display_gui"]:
-            # TODO     env.render()
 
             # Reset the environment when a trial ends.
             if done:

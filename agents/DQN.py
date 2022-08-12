@@ -86,10 +86,6 @@ class DQN:
         # Retrieve the initial observation from the environment.
         obs = env.reset()
 
-        # Render the environment.
-        if config["display_gui"]:
-            env.render()
-
         # Train the agent.
         print("Start the training at {time}".format(time=datetime.now()))
         while self.steps_done < config["n_training_steps"]:
@@ -112,12 +108,10 @@ class DQN:
             if self.steps_done % config["checkpoint"]["frequency"] == 0:
                 self.save(config)
 
-            # Render the environment if needed.
+            # Monitor total reward if needed.
             if config["enable_tensorboard"]:
                 self.total_rewards += reward
                 self.writer.add_scalar("Rewards", self.total_rewards, self.steps_done)
-            if config["display_gui"]:
-                env.render()
 
             # Reset the environment when a trial ends.
             if done:
