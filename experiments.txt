@@ -1,0 +1,2 @@
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent=DAI seed=$seed env.difficulty="hard" agent.g_value="reward" env=openai env.name=$game
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent=DAI seed=$seed env.difficulty="hard" agent.g_value="efe_3" env=openai env.name=$game

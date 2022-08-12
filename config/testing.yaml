@@ -1,0 +1,19 @@
+defaults:
+  - env: dSprites
+  - agent: CriticalHMM
+  - _self_
+
+checkpoint:
+  file: "${oc.env:DATA_DIRECTORY}/${env.name}/${agent.name}/${seed}/model.pt"
+  frequency: 100
+
+images:
+  shape: ${tuple:1,64,64}
+
+display_gui: true
+enable_tensorboard: true
+n_testing_steps: 10000
+buffer_start_size: 50
+batch_size: 10
+seed: 1250
+nb_envs: 5

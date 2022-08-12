@@ -1,0 +1,19 @@
+defaults:
+  - env: openai
+  - agent: CHMM
+  - _self_
+
+checkpoint:
+  file: "${oc.env:DATA_DIRECTORY}/${env.name}/${agent.name}/${seed}/model.pt"
+  frequency: 100
+
+images:
+  shape: ${tuple:1,64,64}
+
+display_gui: true
+enable_tensorboard: true
+n_training_steps: 500
+buffer_start_size: 50
+batch_size: 50
+seed: 1
+nb_envs: 5

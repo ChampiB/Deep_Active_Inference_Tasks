@@ -1,0 +1,6 @@
+name: "dSprites"
+repeats: 5
+max_episode_length: 50
+images_archive: "${oc.env:DATA_DIRECTORY}/dsprites-ds/dsprites.npz"
+n_actions: 4
+difficulty: "hard" # 'easy' or 'hard'
