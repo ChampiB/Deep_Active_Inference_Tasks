@@ -100,7 +100,7 @@ def train(config):
     # Create the agent and train it.
     archive = Checkpoint(config["agent"]["tensorboard_dir"], config["checkpoint"]["file"])
     agent = archive.load_model() if archive.exists() else instantiate(config["agent"])
-    agent.multi_train(envs, config, [env_name for _, env_name in env_names])
+    agent.multi_train(envs, config, env_names)
 
 
 if __name__ == '__main__':
