@@ -89,7 +89,7 @@ class CHMM:
 
     def step(self, obs, config):
         """
-        Select a random action based on the critic ouput
+        Select a random action based on the critic output
         :param obs: the input observation from which decision should be made
         :param config: the hydra configuration
         :return: the random action
@@ -101,6 +101,85 @@ class CHMM:
 
         # Select an action.
         return self.action_selection.select(self.critic(state), self.steps_done)
+
+    def multi_train(self, envs, config, env_names):
+        """
+        Train the agent on multiple gym environments
+        :param envs: the gym environments
+        :param config: the hydra configuration
+        :param env_names: the names of the environments
+        :return: nothing
+        """
+
+        # The number of environments to train on
+        n_envs = len(envs)
+
+        # Retrieve the initial observations from the environments.
+        obs = {i: envs[i].reset() for i in range(n_envs)}
+        old_obs = {}
+
+        # Train the agent.
+        Logger.get().info("Start the training at {time}".format(time=datetime.now()))
+        while self.steps_done < config["n_training_steps"] * n_envs:
+
+            # Compute the environment index
+            env_id = self.steps_done % n_envs
+
+            # Select an action.
+            action = self.step(obs[env_id], config)
+
+            # Execute the action in the environment.
+            old_obs[env_id] = obs[env_id]
+            obs[env_id], reward, done, _ = envs[env_id].step(action)
+
+            # Add the experience to the replay buffer.
+            self.buffer.append(Experience(old_obs[env_id], action, reward, done, obs[env_id]))
+
+            # Perform one iteration of training (if needed).
+            if len(self.buffer) >= config["buffer_start_size"]:
+                self.learn(config)
+
+            # Save the agent (if needed).
+            if self.steps_done % config["checkpoint"]["frequency"] == 0:
+                self.save(config)
+
+            # Monitor total rewards (if needed).
+            if config["enable_tensorboard"]:
+                self.save_total_rewards(env_names, env_id, reward)
+
+            # Reset the environment when a trial ends.
+            if done:
+                obs[env_id] = envs[env_id].reset()
+
+            # Increase the number of steps done.
+            self.steps_done += 1
+
+        # Close the environments.
+        for env in envs:
+            env.close()
+
+    def save_total_rewards(self, env_names, env_id, reward):
+        """
+        Update and save total rewards
+        :param env_names: the names of the environments
+        :param env_id: the index of the current environment
+        :param reward: the reward received environment
+        :return: nothing
+        """
+        # Initialise total reward
+        if not isinstance(self.total_rewards, dict):
+            self.total_rewards = {}
+
+        # Update total reward
+        if env_id not in self.total_rewards.keys():
+            self.total_rewards[env_id] = reward
+        else:
+            self.total_rewards[env_id] += reward
+
+        # Save total reward
+        self.writer.add_scalar(
+            f"Rewards[{env_names[env_id]}]", self.total_rewards[env_id], int(self.steps_done / len(env_names))
+        )
 
     def train(self, env, config):
         """

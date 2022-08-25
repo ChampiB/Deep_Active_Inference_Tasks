@@ -10,7 +10,9 @@ ttkthemes
 pandas~=1.4.2
 seaborn~=0.11.2
 tensorboard
+tensorflow
 hydra-core
 matplotlib
 scipy
 autorom[accept-rom-license]
+Jinja2

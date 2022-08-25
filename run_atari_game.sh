@@ -12,3 +12,8 @@ for game in $atari_games; do
   sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="DQN" seed=$seed env=openai env.name=$game
   seed=$((seed+1))
 done
+# Run random agent
+for game in $atari_games; do
+  sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="HMM" seed=$seed env=openai env.name=$game
+  seed=$((seed+1))
+done
