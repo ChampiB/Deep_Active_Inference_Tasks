@@ -87,11 +87,11 @@ class CHMM:
         # Create summary writer for monitoring
         self.writer = SummaryWriter(tensorboard_dir)
 
-    def step(self, obs, config):
+    def step(self, obs, n_actions):
         """
         Select a random action based on the critic output
         :param obs: the input observation from which decision should be made
-        :param config: the hydra configuration
+        :param n_actions: the number of actions in the environment
         :return: the random action
         """
 
@@ -100,7 +100,7 @@ class CHMM:
         state, _ = self.encoder(obs)
 
         # Select an action.
-        return self.action_selection.select(self.critic(state), self.steps_done)
+        return self.action_selection.select(self.critic(state)[:, :n_actions], self.steps_done)
 
     def multi_train(self, envs, config, env_names):
         """
@@ -126,7 +126,7 @@ class CHMM:
             env_id = self.steps_done % n_envs
 
             # Select an action.
-            action = self.step(obs[env_id], config)
+            action = self.step(obs[env_id], envs[env_id].action_space.n)
 
             # Execute the action in the environment.
             old_obs[env_id] = obs[env_id]

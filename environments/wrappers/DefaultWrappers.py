@@ -32,9 +32,9 @@ class DefaultWrappers:
     @staticmethod
     def env_returns_images(env):
         """
-        Check if the environment returns images.
-        :param env: the environment to check.
-        :return: true if the environment returns images, false otherwise.
+        Check if the environment returns images
+        :param env: the environment to check
+        :return: true if the environment returns images, false otherwise
         """
         return isinstance(env.observation_space, gym.spaces.box.Box) \
             and len(env.observation_space.shape) >= 2
@@ -42,10 +42,10 @@ class DefaultWrappers:
     @staticmethod
     def apply_images_wrappers(env, image_shape):
         """
-        Apply all the default wrapper to the environment.
-        :param env: the environment to wrap.
-        :param image_shape: the shape of the input image.
-        :return: the wrapped environment.
+        Apply all the default wrapper to the environment
+        :param env: the environment to wrap
+        :param image_shape: the shape of the input image
+        :return: the wrapped environment
         """
 
         # Apply the default wrappers.
