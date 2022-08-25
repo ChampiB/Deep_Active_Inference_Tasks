@@ -1,5 +1,5 @@
 game="EpistemicSprites"
-seed=148
+seed=196
 # Run random agent
 sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="HMM" seed=$seed env=$game
 seed=$((seed+1))

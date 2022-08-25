@@ -1,4 +1,4 @@
-seed=148
+seed=200
 # Run CHMM[reward] and CHMM[efe]
 g_values='"reward" "efe_3"'
 for g_value in $g_values; do
