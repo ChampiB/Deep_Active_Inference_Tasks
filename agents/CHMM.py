@@ -197,7 +197,7 @@ class CHMM:
         while self.steps_done < config["n_training_steps"]:
 
             # Select an action.
-            action = self.step(obs, config)
+            action = self.step(obs, config["env"]["n_actions"])
 
             # Execute the action in the environment.
             old_obs = obs
@@ -295,7 +295,12 @@ class CHMM:
         immediate_gval = rewards
 
         # Add information gain to the immediate g-value (if needed).
-        immediate_gval -= mathfc.compute_info_gain(self.g_value, mean_hat, log_var_hat, mean, log_var)
+        # Standard EFE:
+        # immediate_gval -= mathfc.compute_info_gain(self.g_value, mean_hat, log_var_hat, mean, log_var)
+        # Info gain between encoder_t and transition_t+1
+        # immediate_gval -= mathfc.compute_info_gain(self.g_value, mean_hat_t, log_var_hat_t, mean, log_var)
+        # Info gain between encoder_t and encoder_t+1
+        immediate_gval -= mathfc.compute_info_gain(self.g_value, mean_hat_t, log_var_hat_t, mean_hat, log_var_hat)
         immediate_gval = immediate_gval.to(torch.float32)
 
         # Compute the discounted G values.

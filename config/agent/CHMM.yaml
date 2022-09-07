@@ -17,7 +17,7 @@ discount_factor: 0.95
 n_steps_between_synchro: 10
 queue_capacity: 100000
 tensorboard_dir: "${oc.env:DATA_DIRECTORY}/runs/${agent.name}_${env.name}_${seed}"
-g_value: "reward"
+g_value: "efe_3"
 efe_loss_update_encoder: False
 
 # Beta scheduling

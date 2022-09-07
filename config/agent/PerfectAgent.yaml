@@ -1,0 +1,5 @@
+name: perfect_agent
+
+_target_: agents.PerfectAgent.PerfectAgent
+
+tensorboard_dir: "${oc.env:DATA_DIRECTORY}/runs/${agent.name}_${env.name}_${seed}"

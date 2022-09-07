@@ -1,6 +1,6 @@
 defaults:
   - env: EpistemicSprites
-  - agent: CHMM
+  - agent: PerfectAgent
   - _self_
 
 checkpoint:
@@ -10,10 +10,10 @@ checkpoint:
 images:
   shape: ${tuple:1,64,64}
 
-display_gui: false
+display_gui: true
 enable_tensorboard: true
 n_training_steps: 1000000
 buffer_start_size: 50
 batch_size: 50
-seed: 1
+seed: 0
 nb_envs: 5
