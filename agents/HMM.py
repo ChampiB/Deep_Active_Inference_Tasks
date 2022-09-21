@@ -84,10 +84,6 @@ class HMM:
         # Retrieve the initial observation from the environment.
         obs = env.reset()
 
-        # Render the environment (if needed).
-        if config["display_gui"]:
-            env.render()
-
         # Train the agent.
         Logger.get().info("Start the training at {time}".format(time=datetime.now()))
         while self.steps_done < config["n_training_steps"]:
@@ -110,12 +106,10 @@ class HMM:
             if self.steps_done % config["checkpoint"]["frequency"] == 0:
                 self.save(config)
 
-            # Render the environment.
+            # Save the total reward gathered so far.
             if config["enable_tensorboard"]:
                 self.total_rewards += reward
                 self.writer.add_scalar("Rewards", self.total_rewards, self.steps_done)
-            if config["display_gui"]:
-                env.render()
 
             # Reset the environment when a trial ends.
             if done:

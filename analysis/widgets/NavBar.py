@@ -10,10 +10,10 @@ class NavBar(tk.Menu):
 
     def __init__(self, gui):
         """
-        Construct the main navigation bar.
-        :param gui: the graphical user interface.
+        Construct the main navigation bar
+        :param gui: the graphical user interface
         """
-        # Call super class contructor.
+        # Call super class constructor.
         super().__init__(gui.window)
 
         # Store the graphical user interface.
@@ -57,7 +57,7 @@ class NavBar(tk.Menu):
 
     def add_model_cascade(self):
         """
-        Add the model cascade to the nagivation bar.
+        Add the model cascade to the navigation bar.
         :return: nothing.
         """
         if self.model_has_attr(['encoder', 'decoder']):

@@ -25,3 +25,8 @@ beta: 1.0
 beta_starting_step: 0
 beta_rate: 0.0
 n_steps_beta_reset: 10000000000
+
+# Information gain annealing
+phi: 1.0
+phi_starting_step: 0
+phi_rate: 0.0001

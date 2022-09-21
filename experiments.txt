@@ -1,2 +1,19 @@
 sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent=DAI seed=$seed env.difficulty="hard" agent.g_value="reward" env=openai env.name=$game
 sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent=DAI seed=$seed env.difficulty="hard" agent.g_value="efe_3" env=openai env.name=$game
+
+# With info gain between encoder_t and encoder_t+1
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="CHMM" seed=202 agent.g_value=efe_0 env="EpistemicSprites"
+
+# With info gain between encoder_t and transition_t+1
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="CHMM" seed=203 agent.g_value=efe_0 env="EpistemicSprites"
+
+# Experiment with the number of latent states and beta parameters
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="HMM" seed=204 env=openai env.name="ALE/Pong-v5" agent.n_states=50
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="HMM" seed=205 env=openai env.name="ALE/Pong-v5" agent.n_states=100
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="HMM" seed=206 env=openai env.name="ALE/Pong-v5" agent.n_states=50 agent.beta=0.01
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="HMM" seed=207 env=openai env.name="ALE/Pong-v5" agent.n_states=100 agent.beta=0.01
+===> Beta is problematic for learning small object like the ball in Pong-v5
+
+===> Is the latent space size making the ball dispear
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="HMM" seed=208 env=openai env.name="ALE/Pong-v5" agent.n_states=10 agent.beta=0.01
+sbatch -p gpu --mem=10G --gres-flags=disable-binding --gres=gpu env_training.sh agent="HMM" seed=209 env=openai env.name="ALE/Pong-v5" agent.n_states=25 agent.beta=0.01

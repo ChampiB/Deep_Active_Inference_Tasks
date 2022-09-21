@@ -1,5 +1,6 @@
 # Don't push data folder
 data/
+csv_dir/
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template

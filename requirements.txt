@@ -16,3 +16,6 @@ matplotlib
 scipy
 autorom[accept-rom-license]
 Jinja2
+pygame
+keyboard
+pynput

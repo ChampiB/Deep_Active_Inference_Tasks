@@ -2,7 +2,7 @@ import numpy as np
 import gym
 from gym import spaces
 from environments.viewers.DefaultViewer import DefaultViewer
-from singletons.dSpritesDataset import DataSet
+from singletons.DataSet import DataSet
 import torch.nn.functional as func
 import torch
 

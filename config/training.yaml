@@ -1,6 +1,6 @@
 defaults:
   - env: EpistemicSprites
-  - agent: PerfectAgent
+  - agent: CHMM
   - _self_
 
 checkpoint:

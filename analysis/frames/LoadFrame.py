@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter import messagebox
-from singletons.dSpritesDataset import DataSet
+from singletons.DataSet import DataSet
 from agents.save.Checkpoint import Checkpoint
 
 

@@ -8,9 +8,9 @@ from environments.MazeEnv import MazeEnv
 
 def make(config):
     """
-    Create the environment according to the configuration.
-    :param config: the hydra configuration.
-    :return: the created environment.
+    Create the environment according to the configuration
+    :param config: the hydra configuration
+    :return: the created environment
     """
 
     # The list of custom environments.

@@ -111,7 +111,7 @@ class DatasetFrame(tk.Frame):
 
     def refresh(self):
         """
-        Refresh the images displayed in the galery.
+        Refresh the images displayed in the gallery.
         :return: nothing.
         """
         # Check that dataset if loaded
@@ -127,4 +127,4 @@ class DatasetFrame(tk.Frame):
         self.images_to_be_added = []
 
         # Refresh target image
-        self.image_selector.refresh_target_image(None)
+        # TODO self.image_selector.refresh_target_image(None)

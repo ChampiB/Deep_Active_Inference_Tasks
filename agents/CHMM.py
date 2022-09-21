@@ -21,7 +21,8 @@ class CHMM:
             self, encoder, decoder, transition, critic, discount_factor,
             n_steps_beta_reset, beta, efe_lr, vfe_lr, beta_starting_step, beta_rate,
             queue_capacity, n_steps_between_synchro, tensorboard_dir, g_value,
-            action_selection, n_actions=4, steps_done=0, efe_loss_update_encoder=False, **_
+            action_selection, n_actions=4, steps_done=0, efe_loss_update_encoder=False,
+            phi=1.0, phi_starting_step=0, phi_rate=0.0001, **_
     ):
         """
         Constructor
@@ -45,6 +46,9 @@ class CHMM:
         :param g_value: the type of value to be used, i.e. "reward" or "efe"
         :param steps_done: the number of training iterations performed to date.
         :param efe_loss_update_encoder: True if the efe loss must update the weights of the encoder.
+        :param phi: the initial value for the annealing parameters
+        :param phi_starting_step: the step at which the annealing starts
+        :param phi_rate: the rate at which phi decreases
         """
 
         # Neural networks.
@@ -68,6 +72,11 @@ class CHMM:
         self.beta_starting_step = beta_starting_step
         self.beta = beta
         self.beta_rate = beta_rate
+
+        # Annealing
+        self.phi = phi
+        self.phi_starting_step = phi_starting_step
+        self.phi_rate = phi_rate
 
         # Miscellaneous.
         self.total_rewards = 0.0
@@ -265,6 +274,10 @@ class CHMM:
         if self.steps_done % self.n_steps_beta_reset == 0:
             self.beta = 0
 
+        # Implement the annealing for phi.
+        if self.steps_done >= self.phi_starting_step:
+            self.phi = np.clip(self.phi - self.phi_rate, 0, 1)
+
     def compute_efe_loss(self, config, obs, actions, next_obs, done, rewards):
         """
         Compute the expected free energy loss
@@ -296,11 +309,12 @@ class CHMM:
 
         # Add information gain to the immediate g-value (if needed).
         # Standard EFE:
-        # immediate_gval -= mathfc.compute_info_gain(self.g_value, mean_hat, log_var_hat, mean, log_var)
+        immediate_gval -= self.phi * mathfc.compute_info_gain(self.g_value, mean_hat, log_var_hat, mean, log_var)
         # Info gain between encoder_t and transition_t+1
-        # immediate_gval -= mathfc.compute_info_gain(self.g_value, mean_hat_t, log_var_hat_t, mean, log_var)
+        # immediate_gval -= self.phi * mathfc.compute_info_gain(self.g_value, mean_hat_t, log_var_hat_t, mean, log_var)
         # Info gain between encoder_t and encoder_t+1
-        immediate_gval -= mathfc.compute_info_gain(self.g_value, mean_hat_t, log_var_hat_t, mean_hat, log_var_hat)
+        # immediate_gval -= self.phi * mathfc.compute_info_gain(self.g_value, mean_hat_t, log_var_hat_t, mean_hat, log_var_hat)
+
         immediate_gval = immediate_gval.to(torch.float32)
 
         # Compute the discounted G values.

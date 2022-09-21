@@ -3,7 +3,7 @@ import random
 import gym
 from gym import spaces
 from environments.viewers.DefaultViewer import DefaultViewer
-from singletons.dSpritesDataset import DataSet
+from singletons.DataSet import DataSet
 import torch.nn.functional as func
 import torch
 
@@ -12,17 +12,18 @@ import torch
 # This file contains the code of the dSprites environment adapted from:
 # https://github.com/zfountas/deep-active-inference-mc/blob/master/src/game_environment.py
 #
-# Additionally, when the shape reaches top border of the image a hint describing where to bring the shape to
+# Additionally, when the shape reaches top border of the image a hint describing where to bring the shape
 # to get high reward is displayed
 #
 class EpistemicSpritesEnv(gym.Env):
 
-    def __init__(self, config, reset_state=None, render_mode=None):
+    def __init__(self, config, difficulty="easy", reset_state=None, render_mode=None):
         """
         Constructor (compatible with OpenAI gym environment)
-        :param config: the hydra configuration.
+        :param config: the hydra configuration
         :param render_mode: the type of display to use
-        :param reset_state: the state to which the environment should be reset, None for random reset.
+        :param difficulty: the difficulty of the environment
+        :param reset_state: the state to which the environment should be reset, None for random reset
         """
 
         # Gym compatibility
@@ -47,6 +48,8 @@ class EpistemicSpritesEnv(gym.Env):
         self.max_episode_length = config["env"]["max_episode_length"]
         self.reset()
 
+        self.difficulty = difficulty
+
         # Graphical interface
         self.viewer = None
 
@@ -58,9 +61,9 @@ class EpistemicSpritesEnv(gym.Env):
     @staticmethod
     def state_to_one_hot(state):
         """
-        Transform a state into its one hot representation.
-        :param state: the state to transform.
-        :return: the one-hot version of the state.
+        Transform a state into its one hot representation
+        :param state: the state to transform
+        :return: the one-hot version of the state
         """
         shape = func.one_hot(state[1], 3)
         scale = func.one_hot(state[2], 6)
@@ -71,18 +74,18 @@ class EpistemicSpritesEnv(gym.Env):
 
     def get_state(self, one_hot=True):
         """
-        Getter on the current state of the system.
+        Getter on the current state of the system
         :param one_hot: True if the outputs must be a concatenation of one hot encoding,
-        False if the outputs must be a vector of scalar values.
-        :return: the current state.
+        False if the outputs must be a vector of scalar values
+        :return: the current state
         """
         state = torch.from_numpy(self.state).to(torch.int64)
         return self.state_to_one_hot(state) if one_hot else self.state
 
     def reset(self):
         """
-        Reset the state of the environment to an initial state.
-        :return: the first observation.
+        Reset the state of the environment to an initial state
+        :return: the first observation
         """
         if self.reset_state is not None:
             self.state = self.reset_state
@@ -97,8 +100,8 @@ class EpistemicSpritesEnv(gym.Env):
 
     def step(self, action):
         """
-        Execute one time step within the environment.
-        :param action: the action to perform.
+        Execute one time step within the environment
+        :param action: the action to perform
         :return: next observation, reward, is the trial done?, information
         """
         # Increase the frame index, that count the number of frames since
@@ -152,7 +155,12 @@ class EpistemicSpritesEnv(gym.Env):
         Return the current frame (i.e. the current observation).
         :return: the current observation.
         """
-        image = self.images[self.s_to_index(self.state)].astype(self.np_precision)
+        state = self.state.copy()
+        if self.x_pos < 0:
+            state[4] = 0
+        if self.x_pos > 31:
+            state[4] = 31
+        image = self.images[self.s_to_index(state)].astype(self.np_precision)
         image = np.repeat(image, 3, 2) * 255.0
         if self.display_reward_hint:
             if self.reward_on_the_right:
@@ -191,7 +199,7 @@ class EpistemicSpritesEnv(gym.Env):
         self.y_pos += 1.0
 
         # If the object did not cross the bottom line, return false
-        if self.y_pos < 32:
+        if self.y_pos < 32 or self.difficulty == "easy":
             return False
 
         self.last_r = self.compute_hard_reward()
@@ -216,18 +224,26 @@ class EpistemicSpritesEnv(gym.Env):
         Execute the action "right" in the environment.
         :return: false (the object never cross the bottom line when moving left).
         """
-        if self.x_pos < 31:
-            self.x_pos += 1.0
-        return False
+        self.x_pos += 1.0
+
+        if self.x_pos < 32 or self.difficulty == "hard":
+            return False
+
+        self.last_r = 1 if self.reward_on_the_right else -1
+        return True
 
     def left(self):
         """
         Execute the action "left" in the environment.
         :return: false (the object never cross the bottom line when moving right).
         """
-        if self.x_pos > 0:
-            self.x_pos -= 1.0
-        return False
+        self.x_pos -= 1.0
+
+        if self.x_pos >= 0 or self.difficulty == "hard":
+            return False
+
+        self.last_r = 1 if not self.reward_on_the_right else -1
+        return True
 
     #
     # Reward computation

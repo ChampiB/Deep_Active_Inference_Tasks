@@ -29,7 +29,7 @@ class EncoderDecoderFrame(tk.Frame):
 
     def refresh(self):
         """
-        Refresh the sample displayed in the galery.
+        Refresh the sample displayed in the gallery.
         :return: nothing.
         """
         # Get input images.
